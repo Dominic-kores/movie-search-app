@@ -1,122 +1,91 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+// src/App.jsx
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import Header from "./components/Header";
+import HomePage from "./pages/HomePage";
+import MovieDetailsPage from "./pages/MovieDetailsPage";
+import FavoritesPage from "./pages/FavoritesPage";
+
+import {
+  getFavorites,
+  saveFavorite,
+  removeFavorite,
+} from "./utils/favorites";
+
+const App = () => {
+  // Load saved favourites from localStorage when the app starts
+  const [favorites, setFavorites] = useState(() => getFavorites());
+
+  // Add or remove a movie from favourites
+  const handleToggleFavorite = (movie) => {
+    const alreadyFavorite = favorites.some(
+      (favorite) => favorite.imdbID === movie.imdbID
+    );
+
+    if (alreadyFavorite) {
+      removeFavorite(movie.imdbID);
+
+      setFavorites((currentFavorites) =>
+        currentFavorites.filter(
+          (favorite) => favorite.imdbID !== movie.imdbID
+        )
+      );
+    } else {
+      saveFavorite(movie);
+
+      setFavorites((currentFavorites) => [
+        ...currentFavorites,
+        movie,
+      ]);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <BrowserRouter>
+      {/* Header remains visible on every page */}
+      <Header favoritesCount={favorites.length} />
 
-      <div className="ticks"></div>
+      <main className="min-h-screen">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                favorites={favorites}
+                onToggleFavorite={handleToggleFavorite}
+              />
+            }
+          />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <Route
+            path="/movie/:id"
+            element={
+              <MovieDetailsPage
+                favorites={favorites}
+                onToggleFavorite={handleToggleFavorite}
+              />
+            }
+          />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
+          <Route
+            path="/favorites"
+            element={
+              <FavoritesPage
+                favorites={favorites}
+                onToggleFavorite={handleToggleFavorite}
+              />
+            }
+          />
+        </Routes>
+      </main>
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;

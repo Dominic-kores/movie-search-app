@@ -1,2 +1,12 @@
 /* src/index.css */
 @import "tailwindcss";
+
+/* Basic page styling */
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #557098;
+  color: #f8fafc;
+  font-family: Arial, Helvetica, sans-serif;
+}
