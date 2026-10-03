@@ -12,7 +12,7 @@ This project demonstrates the React concepts covered during Week 4, including co
 
 ### Live Application
 
-[View MovieFinder Live](https://YOUR-PROJECT.vercel.app)
+[View MovieFinder Live](https://movie-search-5qvy41xcl-dkisioya-7099.vercel.app/)
 
 ---
 
