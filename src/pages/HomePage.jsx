@@ -13,7 +13,9 @@ const HomePage = ({
   favorites,
   onToggleFavorite,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState("");
+  
 
   // Get API key from .env
   const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
@@ -22,7 +24,7 @@ const HomePage = ({
   const searchUrl = searchTerm
     ? `https://www.omdbapi.com/?apikey=${API_KEY}&s=${encodeURIComponent(
         searchTerm
-      )}`
+      )}&page=${page}`
     : null;
 
   // Reusable custom fetch hook
@@ -34,7 +36,9 @@ const HomePage = ({
 
   const handleSearch = (term) => {
     setSearchTerm(term);
+    setPage(1);
   };
+
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
